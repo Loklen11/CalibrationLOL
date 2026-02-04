@@ -1,0 +1,41 @@
+# Calibration Polymarket LoL : collecte + résolution sans laisser le PC allumé.
+# Déclenché 2×/jour (8h et 20h UTC). Les fichiers data/calibration/*.jsonl sont commités.
+
+name: Calibration Polymarket LoL
+
+on:
+  schedule:
+    - cron: "0 8 * * *"
+    - cron: "0 20 * * *"
+  workflow_dispatch:
+
+jobs:
+  collect-and-resolve:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Dépendances
+        run: pip install --quiet requests
+
+      - name: Collecte
+        run: python scripts/polymarket_calibration_collect.py
+
+      - name: Résolution
+        run: python scripts/polymarket_calibration_resolve.py
+
+      - name: Commit & push calibration
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/calibration/*.jsonl data/calibration/*.json 2>/dev/null || true
+          git diff --staged --quiet || git commit -m "calibration: collect + resolve [automated]"
+          git push
