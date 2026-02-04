@@ -12,6 +12,8 @@ on:
 jobs:
   collect-and-resolve:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # nécessaire pour que le bot puisse push les fichiers calibration
     steps:
       - name: Checkout
         uses: actions/checkout@v4
