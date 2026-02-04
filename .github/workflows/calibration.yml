@@ -1,12 +1,16 @@
 # Calibration Polymarket LoL : collecte + résolution sans laisser le PC allumé.
-# Déclenché 2×/jour (8h et 20h UTC). Les fichiers data/calibration/*.jsonl sont commités.
+# Matchs LoL (Paris) : 6h-13h puis 16h-2h. UTC = Paris -1h (hiver) / -2h (été).
+# - 4h UTC (= 5h Paris) : après la nuit (fin ~2h) → résolution des events terminés
+# - 5h UTC (= 6h Paris) : juste avant la session matin → snapshot
+# - 15h UTC (= 16h Paris) : juste avant la session soir → snapshot
 
 name: Calibration Polymarket LoL
 
 on:
   schedule:
-    - cron: "0 8 * * *"
-    - cron: "0 20 * * *"
+    - cron: "0 4 * * *"
+    - cron: "0 5 * * *"
+    - cron: "0 15 * * *"
   workflow_dispatch:
 
 jobs:
